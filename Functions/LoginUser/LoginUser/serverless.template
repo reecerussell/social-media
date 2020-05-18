@@ -1,0 +1,39 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Description": "A serverless function to handle the authentication of users.",
+  "Resources": {
+    "sm-users-login": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "LoginUser::LoginUser.Functions::LoginUser",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [
+          "AWSLambdaBasicExecutionRole",
+          "SecretsManagerReadWrite"
+        ],
+        "Events": {
+          "LoginUser": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/login",
+              "Method": "POST"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ApiURL": {
+      "Description": "Production API url.",
+      "Value": {
+        "Fn::Sub": "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+      }
+    }
+  }
+}
