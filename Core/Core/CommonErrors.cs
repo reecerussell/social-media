@@ -6,7 +6,7 @@
         public const string PostNotFound = "Post could not be found";
         public const string MediaNotFound = "Media could not be found";
 
-        public bool IsNotFound(string error)
+        public static bool IsNotFound(string error)
         {
             return error switch
             {
