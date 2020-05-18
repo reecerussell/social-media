@@ -51,7 +51,10 @@ namespace Core.Services
 
             async Task<Result<AccessToken>> GenerateAccessToken(User user)
             {
-                var crypto = await _secretProvider.GetRsa(context.GetValue<string>("AUTH_SECRET_NAME"), "public");
+                var secretName = context.GetValue<string>("AUTH_SECRET_NAME");
+                if (string.IsNullOrEmpty(secretName)) throw new ArgumentNullException(nameof(secretName), "the 'AUTH_SECRET_NAME' has not been set");
+
+                var crypto = await _secretProvider.GetRsa(secretName, "private");
                 var signingCredentials = new SigningCredentials(new RsaSecurityKey(crypto), SecurityAlgorithms.RsaSha256);
                 var jwtHeader = new JwtHeader(signingCredentials);
 
@@ -123,12 +126,12 @@ namespace Core.Services
                     return Result.Ok();
                 }
 
-                return await _mediaService.DeleteAsync(user.ProfileImageId);
+                return await _mediaService.DeleteAsync(context, user.ProfileImageId);
             }
 
             async Task<Result> CreateMedia(User user)
             {
-                return await _mediaService.CreateAsync(dto, user)
+                return await _mediaService.CreateAsync(context, dto, user)
                     .Tap(user.SetProfilePicture);
             }
         }

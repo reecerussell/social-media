@@ -13,49 +13,51 @@ namespace Core.Services
 {
     internal class MediaService
     {
-        private readonly string _s3BucketName;
         private readonly IAmazonS3 _s3Client;
         private readonly MimeTypeRepository _mimeTypeRepository;
         private readonly MediaRepository _repository;
 
         public MediaService(
+            IAmazonS3 s3Client,
             MimeTypeRepository mimeTypeRepository,
             MediaRepository repository)
         {
-            _s3BucketName = Environment.GetEnvironmentVariable("MEDIA_BUCKET_NAME");
-            _s3Client = new AmazonS3Client();
+            _s3Client = s3Client;
             _mimeTypeRepository = mimeTypeRepository;
             _repository = repository;
         }
 
-        public async Task<Result<Media>> CreateAsync(UpdateMediaDto dto, User user)
+        public async Task<Result<Media>> CreateAsync(IContext context, UpdateMediaDto dto, User user)
         {
             return await _mimeTypeRepository.FindByNameAsync(dto.ContentType)
                 .ToResult($"'{dto.ContentType}' is an unsupported media type.")
                 .Bind(mt => Media.Create(dto, user, mt))
                 .Tap(m => _repository.Add(m))
-                .Tap(m => UploadAsync(m, dto.File))
+                .Tap(m => UploadAsync(context, m, dto.File))
                 .Tap(_ => _repository.SaveChangesAsync());
         }
 
-        public async Task<Result<Media>> DeleteAsync(string id)
+        public async Task<Result<Media>> DeleteAsync(IContext context, string id)
         {
             return await _repository.FindByIdAsync(id)
                 .ToResult(CommonErrors.MediaNotFound)
-                .Tap(m => _repository.Remove(m))
-                .Tap(DeleteFileAsync)
+                .Tap(_repository.Remove)
+                .Tap(m => DeleteFileAsync(context, m))
                 .Tap(_ => _repository.SaveChangesAsync());
         }
 
-        private async Task<Result> UploadAsync(Media media, Stream file)
+        private async Task<Result> UploadAsync(IContext context, Media media, Stream file)
         {
+            var bucketName = context.GetValue<string>("MEDIA_BUCKET_NAME");
+            if (string.IsNullOrEmpty(bucketName)) throw new ArgumentNullException(nameof(bucketName), "the 'MEDIA_BUCKET_NAME' variable has no value");
+
             try
             {
                 using var transferUtility = new TransferUtility(_s3Client);
 
                 await using (file)
                 {
-                    await transferUtility.UploadAsync(file, _s3BucketName, media.Id);
+                    await transferUtility.UploadAsync(file, bucketName, media.Id);
                 }
 
                 return Result.Ok();
@@ -70,11 +72,14 @@ namespace Core.Services
             }
         }
 
-        private async Task<Result> DeleteFileAsync(Media media)
+        private async Task<Result> DeleteFileAsync(IContext context, Media media)
         {
+            var bucketName = context.GetValue<string>("MEDIA_BUCKET_NAME");
+            if (string.IsNullOrEmpty(bucketName)) throw new ArgumentNullException(nameof(bucketName), "the 'MEDIA_BUCKET_NAME' variable has no value");
+
             try
             {
-                await _s3Client.DeleteObjectAsync(new DeleteObjectRequest {Key = media.Id});
+                await _s3Client.DeleteObjectAsync(new DeleteObjectRequest {Key = media.Id, BucketName = bucketName});
 
                 return Result.Ok();
             }

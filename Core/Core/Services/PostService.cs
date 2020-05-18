@@ -48,7 +48,7 @@ namespace Core.Services
                     Description = dto.Caption,
                 };
 
-                return await _mediaService.CreateAsync(info, user)
+                return await _mediaService.CreateAsync(context, info, user)
                     .Tap(m => media = m);
             }
         }
@@ -59,7 +59,8 @@ namespace Core.Services
                 .ToResult(CommonErrors.PostNotFound)
                 .Tap(CanDelete)
                 .Tap(_repository.Remove)
-                .Tap(_ => _repository.SaveChangesAsync());
+                .Tap(_ => _repository.SaveChangesAsync())
+                .Tap(p => _mediaService.DeleteAsync(context, p.MediaId));
 
             Result CanDelete(Post post)
             {

@@ -103,7 +103,32 @@ namespace Core
 
             if (_values.TryGetValue(key, out var value))
             {
-                return (T) value;
+                return (T)value;
+            }
+
+            if (_pathParameters.TryGetValue(key, out var value2))
+            {
+                return (T) Convert.ChangeType(value2, typeof(T));
+            }
+
+            if (_queueStrings.TryGetValue(key, out var value3))
+            {
+                return (T)Convert.ChangeType(value3, typeof(T));
+            }
+
+            if (_stageVariables.TryGetValue(key, out var value4))
+            {
+                return (T)Convert.ChangeType(value4, typeof(T));
+            }
+
+            if (_headers.TryGetValue(key, out var value5))
+            {
+                return (T)Convert.ChangeType(value5, typeof(T));
+            }
+
+            if (typeof(T) == typeof(string))
+            {
+                return (T)Convert.ChangeType(Environment.GetEnvironmentVariable(key), typeof(T));
             }
 
             return default;
