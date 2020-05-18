@@ -16,21 +16,12 @@ namespace RegisterUser
     {
         private readonly IUserManager _userManager;
         
-        /// <summary>
-        /// Default constructor that Lambda will invoke.
-        /// </summary>
         public Functions()
         {
             var services = Container.Build();
             _userManager = (IUserManager)services.GetService(typeof(IUserManager));
         }
 
-
-        /// <summary>
-        /// A Lambda function to respond to HTTP Get methods from API Gateway
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns>The API Gateway response.</returns>
         public async Task<APIGatewayProxyResponse> RegisterUser(APIGatewayProxyRequest request, ILambdaContext lambdaContext)
         {
             using var context = new Context(request);
