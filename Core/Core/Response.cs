@@ -27,6 +27,20 @@ namespace Core
             return Build(context, request, HttpStatusCode.BadRequest, payload);
         }
 
+        public static APIGatewayProxyResponse NotFound(this APIGatewayProxyRequest request, IContext context, string error)
+        {
+            IDictionary<string, string> payload = null;
+            if (!string.IsNullOrEmpty(error))
+            {
+                payload = new Dictionary<string, string>
+                {
+                    {"message", error }
+                };
+            }
+
+            return Build(context, request, HttpStatusCode.NotFound, payload);
+        }
+
         public static APIGatewayProxyResponse Error(this APIGatewayProxyRequest request, IContext context, Exception exception)
         {
             IDictionary<string, object> payload = null;
