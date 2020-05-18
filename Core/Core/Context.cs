@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Text;
 
 namespace Core
 {
@@ -76,7 +77,8 @@ namespace Core
                 return;
             }
 
-            var payload = JsonConvert.DeserializeObject<IDictionary<string, object>>(parts[1]);
+            var payload = JsonConvert.DeserializeObject<IDictionary<string, object>>(
+                Encoding.UTF8.GetString(Convert.FromBase64String(parts[1])));
 
             foreach (var (key, value) in payload)
             {
@@ -171,7 +173,7 @@ namespace Core
 
         public string GetUserId()
         {
-            return GetValue<string>(ClaimTypes.NameIdentifier);
+            return GetValue<string>("user_id");
         }
 
         public void Dispose()
