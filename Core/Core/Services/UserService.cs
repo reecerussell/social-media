@@ -32,13 +32,14 @@ namespace Core.Services
             _mediaService = mediaService;
         }
 
-        public async Task<Result> RegisterAsync(RegisterUserDto dto)
+        public async Task<Result<string>> RegisterAsync(RegisterUserDto dto)
         {
             return await User.Create(dto, _normalizer, _hasher)
                 .Ensure(async _ => !await _repository.ExistsWithUsernameAsync(dto.Username), 
                     $"The username '{dto.Username}' has already been taken.")
                 .Tap(u => _repository.Add(u))
-                .Bind(_ => _repository.SaveChangesAsync());
+                .Tap(u => _repository.SaveChangesAsync())
+                .Map(u => u.Id);
         }
 
         public async Task<Result<AccessToken>> LoginAsync(IContext context, UserCredentialsDto dto)

@@ -6,7 +6,7 @@ namespace Core
 {
     public interface IUserManager
     {
-        Task<Result> RegisterAsync(RegisterUserDto dto);
+        Task<Result<string>> RegisterAsync(RegisterUserDto dto);
         Task<Result<AccessToken>> LoginAsync(IContext context, UserCredentialsDto dto);
         Task<Result> ChangePasswordAsync(IContext context, ChangePasswordDto dto);
         Task<Result> UpdateUsernameAsync(IContext context, UpdateUsernameDto dto);
