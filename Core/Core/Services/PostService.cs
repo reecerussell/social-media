@@ -2,7 +2,6 @@
 using Core.Models;
 using Core.Repositories;
 using CSharpFunctionalExtensions;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Core.Services

@@ -35,6 +35,7 @@ namespace Core.Models
         {
             Id = Guid.NewGuid().ToString();
             DateCreated = DateTime.Now;
+            UserId = user.Id;
             _media = media;
         }
 
