@@ -1,6 +1,6 @@
 ﻿using Core.Dtos;
-using Core.Extensions;
 using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +24,9 @@ namespace Core.Models
         private List<PostLike> _likes;
         public IReadOnlyList<PostLike> Likes => _lazyLoader.Load(this, ref _likes);
 
-        private readonly Action<object, string> _lazyLoader;
+        private readonly ILazyLoader _lazyLoader;
 
-        private Post(Action<object, string> lazyLoader)
+        private Post(ILazyLoader lazyLoader)
         {
             _lazyLoader = lazyLoader;
         }

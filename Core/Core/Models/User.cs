@@ -1,6 +1,6 @@
 ﻿using Core.Dtos;
-using Core.Extensions;
 using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,20 +19,28 @@ namespace Core.Models
         public DateTime? LockoutEnd { get; private set; }
         public int AccessFailedCount { get; private set; }
         public string ProfileImageId { get; private set; }
+        public string ConcurrencyStamp { get; private set; }
 
         private List<UserFollower> _followers;
-        public IReadOnlyList<UserFollower> Followers => _lazyLoader.Load(this, ref _followers);
 
-        private readonly Action<object, string> _lazyLoader;
+        public IReadOnlyList<UserFollower> Followers
+        {
+            get => _lazyLoader.Load(this, ref _followers);
+            set => _followers = (List<UserFollower>)value;
+        }
 
-        private User(Action<object, string> lazyLoader)
+        private readonly ILazyLoader _lazyLoader;
+
+        private User(ILazyLoader lazyLoader)
         {
             _lazyLoader = lazyLoader;
+            Followers = new List<UserFollower>();
         }
 
         private User()
         {
             Id = Guid.NewGuid().ToString();
+            ConcurrencyStamp = Guid.NewGuid().ToString();
         }
 
         internal Result UpdateUsername(string username, INormalizer normalizer)
@@ -59,6 +67,7 @@ namespace Core.Models
 
             Username = username;
             NormalizedUsername = normalizer.Normalize(username);
+            ConcurrencyStamp = Guid.NewGuid().ToString();
 
             return Result.Ok();
         }
@@ -78,6 +87,7 @@ namespace Core.Models
             }
 
             Bio = bio;
+            ConcurrencyStamp = Guid.NewGuid().ToString();
 
             return Result.Ok();
         }
@@ -111,6 +121,7 @@ namespace Core.Models
             }
 
             PasswordHash = hasher.Hash(password);
+            ConcurrencyStamp = Guid.NewGuid().ToString();
 
             return Result.Ok();
         }
@@ -149,6 +160,7 @@ namespace Core.Models
             void IncrementAccessFailedCount()
             {
                 AccessFailedCount++;
+                ConcurrencyStamp = Guid.NewGuid().ToString();
 
                 if (AccessFailedCount >= 3)
                 {
@@ -161,6 +173,7 @@ namespace Core.Models
         internal void SetProfilePicture(Media media)
         {
             ProfileImageId = media.Id;
+            ConcurrencyStamp = Guid.NewGuid().ToString();
         }
 
         internal Result AddFollower(User follower)
