@@ -16,7 +16,6 @@ namespace FollowUser.Tests
     public class FunctionTest : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
-        private readonly IUserManager _userManager;
 
         private string _userId;
         private string _followerId;
@@ -29,14 +28,14 @@ namespace FollowUser.Tests
             Environment.SetEnvironmentVariable("EXCEPTION_MODE", "detailed", EnvironmentVariableTarget.Process);
             Environment.SetEnvironmentVariable("AWS_REGION", "eu-west-2", EnvironmentVariableTarget.Process);
 
-            _userManager = (IUserManager)Container.Build().GetService(typeof(IUserManager));
-
             SetupAsync().Wait();
         }
 
         private async Task SetupAsync()
         {
-            var (success, _, userId, error) = await _userManager.RegisterAsync(new RegisterUserDto
+            var userManager = (IUserManager)Container.Build().GetService(typeof(IUserManager));
+
+            var (success, _, userId, error) = await userManager.RegisterAsync(new RegisterUserDto
                 {Username = "test_user_1", Password = "test_password_1"});
             if (!success)
             {
@@ -45,7 +44,7 @@ namespace FollowUser.Tests
 
             _userId = userId;
 
-            (success, _, userId, error) = await _userManager.RegisterAsync(new RegisterUserDto
+            (success, _, userId, error) = await userManager.RegisterAsync(new RegisterUserDto
                 { Username = "test_user_2", Password = "test_password_2" });
             if (!success)
             {
@@ -92,8 +91,9 @@ namespace FollowUser.Tests
 
         public void Dispose()
         {
-            _userManager.DeleteAsync(_userId).Wait();
-            _userManager.DeleteAsync(_followerId).Wait();
+            var userManager = (IUserManager)Container.Build().GetService(typeof(IUserManager));
+            userManager.DeleteAsync(_userId).Wait();
+            userManager.DeleteAsync(_followerId).Wait();
         }
     }
 }
