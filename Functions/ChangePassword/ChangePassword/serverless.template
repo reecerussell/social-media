@@ -3,7 +3,7 @@
   "Transform": "AWS::Serverless-2016-10-31",
   "Description": "An AWS Serverless Application.",
   "Resources": {
-    "ChangePassword": {
+    "sm-users-change-password": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "Handler": "ChangePassword::ChangePassword.Functions::ChangePassword",
