@@ -153,7 +153,7 @@ namespace Core.Services
             return await _repository.FindByIdAsync(context.GetUserId())
                 .ToResult(CommonErrors.UserNotFound)
                 .Tap(u => currentUser = u)
-                .Bind(_ => _repository.FindByIdAsync(userId)
+                .Bind(_ => _repository.FindByIdWithFollowersAsync(userId)
                     .ToResult(CommonErrors.UserNotFound))
                 .Tap(u => u.AddFollower(currentUser))
                 .Tap(_ => _repository.SaveChangesAsync());
@@ -165,7 +165,7 @@ namespace Core.Services
             return await _repository.FindByIdAsync(context.GetUserId())
                 .ToResult(CommonErrors.UserNotFound)
                 .Tap(u => currentUser = u)
-                .Bind(_ => _repository.FindByIdAsync(userId)
+                .Bind(_ => _repository.FindByIdWithFollowersAsync(userId)
                     .ToResult(CommonErrors.UserNotFound))
                 .Tap(u => u.RemoveFollower(currentUser))
                 .Tap(_ => _repository.SaveChangesAsync());

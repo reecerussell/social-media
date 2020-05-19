@@ -23,18 +23,16 @@ namespace Core.Models
 
         private List<UserFollower> _followers;
 
-        public IReadOnlyList<UserFollower> Followers
+        public virtual IReadOnlyList<UserFollower> Followers
         {
-            get => _lazyLoader.Load(this, ref _followers);
+            get => _followers;
             set => _followers = (List<UserFollower>)value;
         }
 
-        private readonly ILazyLoader _lazyLoader;
-
         private User(ILazyLoader lazyLoader)
         {
-            _lazyLoader = lazyLoader;
-            Followers = new List<UserFollower>();
+            // An EF Core constructor. LazyLoader is brought in to avoid
+            // EF Core using the other constructor.
         }
 
         private User()

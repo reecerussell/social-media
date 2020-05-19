@@ -1,10 +1,8 @@
 ﻿using Core.Models;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Core.Repositories
 {
@@ -27,6 +25,13 @@ namespace Core.Repositories
         public async Task<Maybe<User>> FindByIdAsync(string id)
         {
             return await Users.FindAsync(id);
+        }
+
+        public async Task<Maybe<User>> FindByIdWithFollowersAsync(string id)
+        {
+            return await Users
+                .Include(x => x.Followers)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Maybe<User>> FindByUsernameAsync(string username)
