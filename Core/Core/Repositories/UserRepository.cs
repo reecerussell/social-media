@@ -2,7 +2,9 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Core.Repositories
 {
@@ -33,10 +35,11 @@ namespace Core.Repositories
                 x => x.NormalizedUsername == _normalizer.Normalize(username));
         }
 
-        public async Task<bool> ExistsWithUsernameAsync(string username)
+        public async Task<bool> ExistsWithUsernameAsync(string username, params string[] idsToIgnore)
         {
             return await Users
                 .AsNoTracking()
+                .Where(x => idsToIgnore.All(y => y != x.Id))
                 .AnyAsync(
                 x => x.NormalizedUsername == _normalizer.Normalize(username));
         }

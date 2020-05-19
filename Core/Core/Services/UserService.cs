@@ -90,7 +90,7 @@ namespace Core.Services
         public async Task<Result> ChangePasswordAsync(IContext context, ChangePasswordDto dto)
         {
             return await _repository.FindByIdAsync(context.GetUserId())
-                .ToResult("User could not be found.")
+                .ToResult(CommonErrors.UserNotFound)
                 .Tap(u => u.UpdatePassword(dto, _hasher))
                 .Bind(_ => _repository.SaveChangesAsync());
         }
@@ -98,7 +98,9 @@ namespace Core.Services
         public async Task<Result> UpdateUsernameAsync(IContext context, UpdateUsernameDto dto)
         {
             return await _repository.FindByIdAsync(context.GetUserId())
-                .ToResult("User could not be found.")
+                .ToResult(CommonErrors.UserNotFound)
+                .Ensure(async u => !await _repository.ExistsWithUsernameAsync(dto.Username, u.Id), 
+                    $"The username '{dto.Username}' has already been taken.")
                 .Tap(u => u.UpdateUsername(dto.Username, _normalizer))
                 .Bind(_ => _repository.SaveChangesAsync());
         }
@@ -106,7 +108,7 @@ namespace Core.Services
         public async Task<Result> UpdateBioAsync(IContext context, UserBioDto dto)
         {
             return await _repository.FindByIdAsync(context.GetUserId())
-                .ToResult("User could not be found.")
+                .ToResult(CommonErrors.UserNotFound)
                 .Tap(u => u.UpdateBio(dto.Bio))
                 .Bind(_ => _repository.SaveChangesAsync());
         }
@@ -114,7 +116,7 @@ namespace Core.Services
         public async Task<Result> UpdateProfilePictureAsync(IContext context, UpdateMediaDto dto)
         {
             return await _repository.FindByIdAsync(context.GetUserId())
-                .ToResult("User could not be found.")
+                .ToResult(CommonErrors.UserNotFound)
                 .Tap(RemoveMedia)
                 .Tap(CreateMedia)
                 .Tap(_ => _repository.SaveChangesAsync());
@@ -139,7 +141,7 @@ namespace Core.Services
         public async Task<Result> DeleteAsync(string userId)
         {
             return await _repository.FindByIdAsync(userId)
-                .ToResult("User could not be found.")
+                .ToResult(CommonErrors.UserNotFound)
                 .Tap(u => _repository.Remove(u))
                 .Bind(_ => _repository.SaveChangesAsync());
         }
@@ -148,10 +150,10 @@ namespace Core.Services
         {
             User currentUser = null;
             return await _repository.FindByIdAsync(context.GetUserId())
-                .ToResult("User could not be found.")
+                .ToResult(CommonErrors.UserNotFound)
                 .Tap(u => currentUser = u)
                 .Bind(_ => _repository.FindByIdAsync(userId)
-                    .ToResult("user could not be found."))
+                    .ToResult(CommonErrors.UserNotFound))
                 .Tap(u => u.AddFollower(currentUser))
                 .Tap(_ => _repository.SaveChangesAsync());
         }
@@ -160,10 +162,10 @@ namespace Core.Services
         {
             User currentUser = null;
             return await _repository.FindByIdAsync(context.GetUserId())
-                .ToResult("User could not be found.")
+                .ToResult(CommonErrors.UserNotFound)
                 .Tap(u => currentUser = u)
                 .Bind(_ => _repository.FindByIdAsync(userId)
-                    .ToResult("user could not be found."))
+                    .ToResult(CommonErrors.UserNotFound))
                 .Tap(u => u.RemoveFollower(currentUser))
                 .Tap(_ => _repository.SaveChangesAsync());
         }
