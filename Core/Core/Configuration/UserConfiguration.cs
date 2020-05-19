@@ -47,6 +47,11 @@ namespace Core.Configuration
                 .HasColumnName("profile_image_id");
 
             builder
+                .Property(x => x.ConcurrencyStamp)
+                .HasColumnName("concurrency_stamp")
+                .IsConcurrencyToken();
+
+            builder
                 .HasMany(x => x.Followers)
                 .WithOne()
                 .HasForeignKey(x => x.UserId);
