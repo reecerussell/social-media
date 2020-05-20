@@ -1,7 +1,6 @@
 ﻿using Core.Models;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading.Tasks;
 
 namespace Core.Repositories
@@ -22,6 +21,11 @@ namespace Core.Repositories
         public async Task<Maybe<Media>> FindByIdAsync(string id)
         {
             return await Media.FindAsync(id);
+        }
+
+        public async Task<Maybe<Media>> FindByIdAsNoTrackingAsync(string id)
+        {
+            return await Media.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void Add(Media media)

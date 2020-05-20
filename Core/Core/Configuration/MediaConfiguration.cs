@@ -25,6 +25,11 @@ namespace Core.Configuration
             builder
                 .Property(x => x.MimeTypeId)
                 .HasColumnName("mime_type_id");
+
+            builder
+                .HasOne(x => x.MimeType)
+                .WithMany()
+                .HasForeignKey(x => x.MimeTypeId);
         }
     }
 }

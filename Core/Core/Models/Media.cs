@@ -11,6 +11,8 @@ namespace Core.Models
         public string MimeTypeId { get; private set; }
         public string Description { get; private set; }
 
+        public virtual MimeType MimeType { get; private set; }
+
         private Media()
         {
         }

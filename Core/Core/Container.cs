@@ -37,6 +37,7 @@ namespace Core
                 .AddScoped<PostRepository>()
                 .AddScoped<UserRepository>()
                 .AddScoped<MediaService>()
+                .AddScoped<IMediaDownloader, MediaService>()
                 .AddTransient<IPostManager, PostService>()
                 .AddTransient<IUserManager, UserService>();
 
