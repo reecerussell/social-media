@@ -139,12 +139,23 @@ namespace Core.Services
             }
         }
 
-        public async Task<Result> DeleteAsync(string userId)
+        public async Task<Result> DeleteAsync(IContext context, string userId)
         {
             return await _repository.FindByIdAsync(userId)
                 .ToResult(CommonErrors.UserNotFound)
                 .Tap(u => _repository.Remove(u))
-                .Bind(_ => _repository.SaveChangesAsync());
+                .Bind(DeleteProfilePictureAsync)
+                .Bind(() => _repository.SaveChangesAsync());
+
+            async Task<Result> DeleteProfilePictureAsync(User user)
+            {
+                if (string.IsNullOrEmpty(user.ProfileImageId))
+                {
+                    return Result.Ok();
+                }
+
+                return await _mediaService.DeleteAsync(context, user.ProfileImageId);
+            }
         }
 
         public async Task<Result> FollowAsync(IContext context, string userId)

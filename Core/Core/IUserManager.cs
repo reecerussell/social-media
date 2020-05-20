@@ -12,7 +12,7 @@ namespace Core
         Task<Result> UpdateUsernameAsync(IContext context, UpdateUsernameDto dto);
         Task<Result> UpdateBioAsync(IContext context, UserBioDto dto);
         Task<Result> UpdateProfilePictureAsync(IContext context, UpdateMediaDto dto);
-        Task<Result> DeleteAsync(string userId);
+        Task<Result> DeleteAsync(IContext context, string userId);
         Task<Result> FollowAsync(IContext context, string userId);
         Task<Result> UnfollowAsync(IContext context, string userId);
     }
