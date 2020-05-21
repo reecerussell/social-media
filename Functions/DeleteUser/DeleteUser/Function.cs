@@ -26,7 +26,7 @@ namespace DeleteUser
 
             try
             {
-                var (success, _, error) = await _userManager.DeleteAsync(context.GetUserId());
+                var (success, _, error) = await _userManager.DeleteAsync(context, context.GetUserId());
                 if (!success)
                 {
                     if (CommonErrors.IsNotFound(error))
