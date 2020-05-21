@@ -69,7 +69,7 @@ namespace Core.Services
                 var payload = new JwtPayload
                 {
                     {"sub", user.Id},
-                    {ClaimTypes.NameIdentifier, user.Id},
+                    {"user_id", user.Id},
                     { "iss", issuer},
                     {"iat", now},
                     {"nbf", now},
