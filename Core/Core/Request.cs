@@ -24,8 +24,19 @@ namespace Core
 
         public static (Stream Stream, string ContentType) ParseFile(this APIGatewayProxyRequest request, string formName)
         {
-            var rawData = Convert.FromBase64String(request.Body);
-            var content = Encoding.UTF8.GetString(rawData);
+            var rawData = Encoding.UTF8.GetBytes(request.Body);
+            var content = request.Body;
+            if (request.IsBase64Encoded)
+            {
+                var mod4 = request.Body.Length % 4;
+                if (mod4 > 0)
+                {
+                    request.Body += new string('=', 4 - mod4);
+                }
+
+                rawData = Convert.FromBase64String(request.Body);
+                content = Encoding.UTF8.GetString(rawData);
+            }
 
             var contentType = string.Empty;
             MemoryStream data = null;
