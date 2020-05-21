@@ -81,6 +81,12 @@ namespace Core
                 return;
             }
 
+            var mod4 = parts[1].Length % 4;
+            if (mod4 > 0)
+            {
+                parts[1] += new string('=', 4 - mod4);
+            }
+
             var payload = JsonConvert.DeserializeObject<IDictionary<string, object>>(
                 Encoding.UTF8.GetString(Convert.FromBase64String(parts[1])));
 
