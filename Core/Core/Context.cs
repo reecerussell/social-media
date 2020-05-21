@@ -65,13 +65,17 @@ namespace Core
 
         private void ParseAuthPayload()
         {
-            var authValue = _headers["Authorization"];
-            if (string.IsNullOrEmpty(authValue))
+            if (!_headers.TryGetValue("Authorization", out var token))
             {
                 return;
             }
 
-            var parts = authValue.Split('.');
+            if (!token.StartsWith("Bearer "))
+            {
+                return;
+            }
+
+            var parts = token[7..].Split('.');
             if (parts.Length != 3)
             {
                 return;
