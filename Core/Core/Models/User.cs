@@ -153,6 +153,8 @@ namespace Core.Models
                 return Result.Failure("Your password is incorrect.");
             }
 
+            AccessFailedCount = 0;
+
             return Result.Ok();
 
             void IncrementAccessFailedCount()
