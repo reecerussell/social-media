@@ -25,7 +25,10 @@ namespace Core.Repositories
 
         public async Task<Maybe<Media>> FindByIdAsNoTrackingAsync(string id)
         {
-            return await Media.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return await Media
+                .AsNoTracking()
+                .Include(x => x.MimeType)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void Add(Media media)
