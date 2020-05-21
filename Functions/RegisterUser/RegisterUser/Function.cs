@@ -38,7 +38,7 @@ namespace RegisterUser
 
             try
             {
-                var (success, _, error) = await _userManager.RegisterAsync(dto);
+                var (success, _, _, error) = await _userManager.RegisterAsync(dto);
                 if (!success)
                 {
                     return request.BadRequest(context, error);
