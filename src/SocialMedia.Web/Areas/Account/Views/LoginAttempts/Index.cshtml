@@ -1,0 +1,39 @@
+﻿@model IReadOnlyList<SocialMedia.Auth.Dtos.UserLoginAttemptDto>
+
+@{
+    ViewData["Title"] = "Login Attempts | Account";
+    Layout = "_Layout";
+}
+
+<div class="section p-4">
+    <h1 class="header-1">Login Attempts</h1>
+    <p class="small text-muted info">
+        Here is a list of the last 10 login attempts to your account.
+    </p>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tbody>
+            @foreach (var dto in Model)
+            {
+                <tr>
+                    <td>
+                        <p class="mb-0">
+                            @if (dto.Successful)
+                            {
+                                <b class="text-success">@dto.Message</b>
+                            }
+                            else
+                            {
+                                <b class="text-danger">@dto.Message</b>
+                            }
+                            <br />
+                            <span class="text-muted small"><b>From:</b> @dto.RemoteAddress</span><br />
+                            <span class="text-muted small"><b>At:</b> @dto.Date.ToString("R")</span>
+                        </p>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

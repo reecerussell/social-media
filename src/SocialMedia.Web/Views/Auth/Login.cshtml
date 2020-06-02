@@ -1,0 +1,57 @@
+﻿@model  SocialMedia.Web.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_SingleLayout";
+}
+
+<div class="container sections">
+    <div class="row">
+        <div class="col-md-8 col-lg-6 col-xl-5">
+            <div class="section p-4">
+                <h1 class="header-1">Social Media</h1>
+                <p class="text-muted small pt-1 info">
+                    The brand new, inivitive social media platform, leading
+                    the industry in how a social media platform should be!
+                </p>
+                <hr />
+                <h2 class="display-3">Log In</h2>
+                <p class="text-center">
+                    Enter your account details to login to your account.
+                </p>
+                <form asp-action="Login" asp-controller="Auth" method="post">
+                    @if (!string.IsNullOrEmpty(Model.Error))
+                    {
+                        <p class="error">@Model.Error</p>
+                    }
+
+                    <div class="form-group sm-input">
+                        <label class="small" for="User.Username">Username</label>
+                        <input type="text" name="User.Username" id="User.Username" class="form-control" placeholder="Enter your username" required/>
+                    </div>
+                    <div class="form-group sm-input">
+                        <label class="small" for="User.Password">Password</label>
+                        <input type="password" name="User.Password" id="User.Password" class="form-control" placeholder="Enter your password" required/>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6 pt-3">
+                                <label>
+                                    <input type="checkbox" name="User.RememberMe" />&nbsp;
+                                    Remember me?
+                                </label>
+                            </div>
+                            <div class="col-sm-6">
+                                <button type="submit" class="btn btn-primary btn-block float-right">LOGIN</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                </form>
+                <p class="text-center mb-0">
+                    <a asp-action="Register" asp-controller="Auth">Don't have an account?</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

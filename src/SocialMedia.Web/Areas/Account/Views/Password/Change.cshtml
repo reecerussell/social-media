@@ -1,0 +1,40 @@
+﻿@model ChangePasswordViewModel
+@{
+    ViewData["Title"] = "Change Password";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col-xl-8">
+        <div class="section p-4">
+            <h1 class="header-1">Change Password</h1>
+            <p class="text-muted small info">
+                Use this page to change your account password.
+            </p>
+            <hr />
+            <form asp-action="Change" asp-controller="Password" asp-area="Account" method="post">
+                @if (!string.IsNullOrEmpty(Model.Error))
+                {
+                    <p class="error">
+                        @Model.Error
+                    </p>
+                }
+                <div class="form-group sm-input">
+                    <label for="CurrentPassword" class="small">Current Password</label>
+                    <input type="password" name="CurrentPassword" id="CurrentPassword" placeholder="Enter your current password" class="form-control" max="256" required />
+                </div>
+                <div class="form-group sm-input">
+                    <label for="NewPassword" class="small">New Password</label>
+                    <input type="password" name="NewPassword" id="NewPassword" placeholder="Enter a new password" class="form-control" max="256" required />
+                </div>
+                <div class="form-group sm-input">
+                    <label for="ConfirmPassword" class="small">Confirm Password</label>
+                    <input type="password" name="ConfirmPassword" id="ConfirmPassword" placeholder="Repeat your new password" class="form-control" max="256" required />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary float-right">Change</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

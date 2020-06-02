@@ -1,0 +1,31 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+    Layout = "_SingleLayout";
+}
+
+<div class="container sections">
+    <div class="row">
+        <div class="col-md-8 col-lg-6 col-xl-5">
+            <div class="section p-4">
+                <h1 class="header-1 text-danger">Error</h1>
+                <p class="text-muted small pt-1 info">
+                    Oops, it looks like an error occured! Try reloading the page, or try again later.
+                </p>
+                <hr />
+                <h2 class="display-3">Info</h2>
+                @if (Model.ShowRequestId)
+                {
+                    <p>
+                        <b>Request Id:</b> <code>@Model.RequestId</code>
+                    </p>
+                }
+                <ul>
+                    <li><a href="#" onClick="window.location.reload">Reload the page.</a></li>
+                    <li><a href="#" onclick="window.location.pop">Go back.</a></li>
+                    <li><a href="/">Home page.</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

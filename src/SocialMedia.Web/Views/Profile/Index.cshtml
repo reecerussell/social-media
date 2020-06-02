@@ -1,0 +1,125 @@
+﻿@using SocialMedia.Core
+@model SocialMedia.Auth.Dtos.ProfileDto
+@inject IUser UserInfo
+@{
+    ViewData["Title"] = Model.Username + " | Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="section p-4 mb-4" id="profile">
+    <div class="row">
+        @if (!string.IsNullOrEmpty(Model.ProfileImageId))
+        {
+            <div class="col-sm-3">
+                <div class="mb-3" id="profile-image" style="background-image: url(/Media/Download/@Model.ProfileImageId)">
+                </div>
+            </div>
+        }
+
+        <div class="col-sm-9">
+            <h1 class="header-1 text-left">@Model.Username</h1>
+            <p>
+                <b>
+                    @if (Model.FollowerCount == 1)
+                    {
+                        @Model.FollowerCount
+                        @:Follower
+                    }
+                    else
+                    {
+                        @Model.FollowerCount
+                        @:Followers
+                    }
+
+                    <span class="ml-4">
+                        @{
+                            var postCount = Model.Posts.Count;
+                            if (postCount == 1)
+                            {
+                                @:1 Post
+                            }
+                            else
+                            {
+                                @postCount
+                                @:Posts
+                            }
+                        }
+                    </span>
+
+                    @if (UserInfo.Id == Model.Id)
+                    {
+                        <span class="ml-4">
+                            <a asp-action="Index" asp-controller="Account" asp-area="Account" class="text-secondary underline">Manage Your Account</a>
+                        </span>
+                    }
+                    else
+                    {
+                        if (Model.FollowedByUser)
+                        {
+                            <span class="ml-4">
+                                <a href="#" id="unfollow" class="text-secondary underline">Unfollow</a>
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="ml-4">
+                                <a href="#" id="follow" class="text-secondary underline">Follow</a>
+                            </span>
+                        }
+                    }
+                </b>
+            </p>
+
+            <p>
+                @Model.Bio
+            </p>
+
+
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Snapchat) &&
+         !string.IsNullOrEmpty(Model.Instagram) &&
+         !string.IsNullOrEmpty(Model.Twitter))
+    {
+        <p class="sm-social-icons">
+            @if (!string.IsNullOrEmpty(Model.Snapchat))
+            {
+                <span class="sm-social-icon snapchat">
+                    <i class="fab fa-snapchat-ghost"></i>@Model.Snapchat
+                </span>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Instagram))
+            {
+                <a class="sm-social-icon instagram" href="https://instagram.com/@Model.Instagram">
+                    <i class="fab fa-instagram"></i>@Model.Instagram
+                </a>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Twitter))
+            {
+                <a class="sm-social-icon twitter" href="https://twitter.com/@Model.Twitter">
+                    <i class="fab fa-twitter"></i>@Model.Twitter
+                </a>
+            }
+        </p>
+    }
+</div>
+
+@if (Model.FollowedByUser)
+{
+    <form asp-action="Unfollow" method="post" id="unfollowForm">
+        <input type="hidden" name="userId" value="@Model.Id" />
+        <input type="hidden" name="username" value="@Model.Username" />
+    </form>
+}
+else
+{
+    <form asp-action="Follow" method="post" id="followForm">
+        <input type="hidden" name="userId" value="@Model.Id" />
+        <input type="hidden" name="username" value="@Model.Username" />
+    </form>
+}
+
+<partial name="_Feed" model="Model.Posts" />

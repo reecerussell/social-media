@@ -1,0 +1,30 @@
+﻿@model CreatePostViewModel
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="section p-4" id="createPost">
+    <h1 class="header-1">Create a Post</h1>
+    <p class="text-center small info">
+        Make a post to your Social Media account. Upload and image, just a caption, or both!
+    </p>
+    <hr />
+    <form asp-action="Create" asp-controller="Post" method="post" enctype="multipart/form-data">
+        @if (!string.IsNullOrEmpty(Model.Error))
+        {
+            <p class="error">@Model.Error</p>
+        }
+        <div class="form-group sm-input">
+            <label for="Post.Caption" class="small">Caption</label>
+            <textarea name="Post.Caption" id="Post.Caption" class="form-control" rows="3" placeholder="Write a caption!" max="255" required></textarea>
+        </div>
+        <div class="form-group">
+            <div class="button-group float-right">
+                <input type="file" id="File" class="d-none" name="Post.File" />
+                <button type="button" class="btn btn-secondary" data-fallback-text="Upload An Image" id="PickFile">Upload An Image</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,28 @@
+﻿@model DeleteViewModel
+@{
+    ViewData["Title"] = "Delete | Account";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col-xl-8">
+        <div class="section p-4">
+            <h1 class="header-1 text-danger">Delete Account</h1>
+            <p class="text-muted small">
+                This page is used to delete your Social Media account. By deleting your account, all data including posts, user information and images will be deleted. This action is permanent and cannot be reversed.
+            </p>
+            @if (!string.IsNullOrEmpty(Model.Error))
+            {
+                <p class="error">
+                    @Model.Error
+                </p>
+            }
+            <hr />
+            <form asp-action="Index" asp-controller="Delete" asp-area="Account" method="post">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-danger float-right">DELETE YOUR ACCOUNT</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
