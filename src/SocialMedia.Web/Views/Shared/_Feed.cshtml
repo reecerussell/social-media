@@ -1,0 +1,61 @@
+﻿@using SocialMedia.Web.Helpers
+@model IReadOnlyList<SocialMedia.Core.Dtos.FeedItemDto>
+@{
+    Layout = null;
+}
+
+@foreach (var post in Model)
+{
+
+    <div class="section mb-4">
+        @if (!string.IsNullOrEmpty(post.PostMediaId))
+        {
+            <a asp-action="Index" asp-controller="Post" asp-route-id="@post.PostId">
+                <img src="/Media/Download/@post.PostMediaId" alt="@post.Caption" class="img-fluid" />
+            </a>
+        }
+
+        <div class="p-4">
+            <div class="post-user-info">
+                @if (!string.IsNullOrEmpty(post.UserProfileImageId))
+                {
+                    <a href="@Url.ProfileUrl(post.Username)">
+                        <div class="post-user-image" style="background-image: url(/Media/Download/@post.UserProfileImageId)">
+                        </div>
+                    </a>
+                }
+                <p>
+                    <a asp-action="Index" asp-controller="Post" asp-route-id="@post.PostId" class="text-secondary">
+                        @if (post.LikeCount == 1)
+                        {
+                            <b>@post.LikeCount Like</b>
+                        }
+                        else
+                        {
+                            <b>@post.LikeCount Likes</b>
+                        }
+                    </a>
+                    &nbsp;
+                    <a asp-action="Index" asp-controller="Post" asp-route-id="@post.PostId" class="text-secondary">
+                        @if (post.CommentCount == 1)
+                        {
+                            <b>@post.CommentCount Comment</b>
+                        }
+                        else
+                        {
+                            <b>@post.CommentCount Comments</b>
+                        }
+                    </a>
+                    <br />
+                    <b><a href="@Url.ProfileUrl(post.Username)" class="text-secondary">@post.Username</a></b> <a asp-action="Index" asp-controller="Post" asp-route-id="@post.PostId" class="text-secondary">@post.Caption</a><br />
+                    <small>
+                        <a asp-action="Index" asp-controller="Post" asp-route-id="@post.PostId" class="text-muted">
+                            @post.DateCreated.ToString("G")
+                        </a>
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+}

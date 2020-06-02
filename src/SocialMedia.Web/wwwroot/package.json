@@ -1,0 +1,32 @@
+{
+	"name": "social-media",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build-styles": "node-sass styles/styles.scss styles/styles.min.css --output-style compressed",
+		"build-scripts": "webpack"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/reecerussell/social-media.git"
+	},
+	"author": "Reece Russell",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/reecerussell/social-media/issues"
+	},
+	"homepage": "https://github.com/reecerussell/social-media#readme",
+	"devDependencies": {
+		"@babel/core": "^7.9.6",
+		"@babel/preset-env": "^7.9.6",
+		"babel-loader": "^8.1.0",
+		"node-sass": "^4.14.1",
+		"webpack": "^4.43.0",
+		"webpack-cli": "^3.3.11"
+	},
+	"dependencies": {
+		"@fortawesome/fontawesome-free": "^5.13.0",
+		"bootstrap": "^4.5.0"
+	}
+}

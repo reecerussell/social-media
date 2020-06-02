@@ -1,0 +1,76 @@
+﻿@model AccountViewModel
+@{
+    ViewData["Title"] = "Account";
+    Layout = "_Layout";
+}
+
+<div class="section p-4" id="accountEdit">
+    <h1 class="header-1">Account</h1>
+    <p class="text-muted small info">
+        Use this page to edit your account information.
+    </p>
+    <hr />
+    <form asp-action="Index" asp-controller="Account" asp-area="Account" method="post" enctype="multipart/form-data">
+        @if (!string.IsNullOrEmpty(Model.Error))
+        {
+            <p class="error">
+                @Model.Error
+            </p>
+        }
+        <div class="row">
+            <div class="col-sm-4">
+                @if (string.IsNullOrEmpty(Model.Account.ProfileImageId))
+                {
+                    <p>It looks like you don't have a profile picture, add one here!</p>
+
+                    <p>
+                        <button type="button" class="btn btn-primary btn-block" id="PickFile" data-fallback-text="Upload a Picture">Upload a Picture</button>
+                    </p>
+                }
+                else
+                {
+                    <div class="mb-3" id="profile-image" style="background-image: url(/Media/Download/@Model.Account.ProfileImageId)">
+                    </div>
+
+                    <p>
+                        <button type="button" class="btn btn-primary btn-block" id="PickFile" data-fallback-text="Change">Change</button>
+                    </p>
+                }
+                
+                <p class="text-muted small">
+                    Click the button to change your profile picture, then press save. Your profile picture can be seen by other users.
+                </p>
+
+                <input type="file" name="File" id="File" class="d-none" />
+            </div>
+            <div class="col-sm-8">
+                <h2 class="display-3 text-left mb-3">Details</h2>
+                <div class="form-group sm-input">
+                    <label for="Username" class="small">Username</label>
+                    <input type="text" name="Username" id="Username" class="form-control" value="@Model.Account.Username" placeholder="Enter a username" required />
+                </div>
+                <div class="form-group sm-input">
+                    <label for="Bio" class="small">Bio</label>
+                    <textarea name="Bio" id="Bio" class="form-control" placeholder="A little about yourself...">@Model.Account.Bio</textarea>
+                </div>
+                <hr />
+                <h2 class="display-3 text-left mb-3">Socials</h2>
+                <div class="form-group sm-input">
+                    <label for="Snapchat" class="small">Snapchat</label>
+                    <input type="text" name="Socials.Snapchat" id="Snapchat" class="form-control" value="@Model.Account.Snapchat" placeholder="@@snapchat" max="255" />
+                </div>
+                <div class="form-group sm-input">
+                    <label for="Instagram" class="small">Instagram</label>
+                    <input type="text" name="Socials.Instagram" id="Instagram" class="form-control" value="@Model.Account.Instagram" placeholder="@@instagram" max="255" />
+                </div>
+                <div class="form-group sm-input">
+                    <label for="Twitter" class="small">Twitter</label>
+                    <input type="text" name="Socials.Twitter" id="Twitter" class="form-control" value="@Model.Account.Twitter" placeholder="@@twitter" max="255" />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary float-right">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

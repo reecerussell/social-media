@@ -1,0 +1,63 @@
+﻿@using SocialMedia.Core
+@using SocialMedia.Web.Helpers
+@inject IUser UserInfo
+@{
+    Layout = "~/Views/Shared/_SingleLayout.cshtml";
+}
+
+<div class="container sections">
+    <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="section" id="sidebar">
+                <div class="p-4">
+                    <div class="post-user-info">
+                        @if (!string.IsNullOrEmpty(UserInfo.ProfileImageId))
+                        {
+                            <a href="@Url.ProfileUrl(UserInfo.Username)">
+                                <div class="post-user-image" style="background-image: url(/Media/Download/@UserInfo.ProfileImageId)">
+                                </div>
+                            </a>
+                        }
+                        <p>
+                            <a class="text-secondary" href="@Url.ProfileUrl(UserInfo.Username)">
+                                <b>@UserInfo.Username</b>
+                            </a>
+                            <br />
+                            <span class="text-muted">
+                                @if (UserInfo.FollowerCount == 1)
+                                {
+                                    @:1 Follower
+                                }
+                                else
+                                {
+                                    @UserInfo.FollowerCount @:Followers
+                                }
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <ul class="list-group list-group-flush border-top">
+                    <li class="list-group-item">
+                        <a asp-action="Index" asp-controller="Feed" class="d-block text-secondary">
+                            <i class="fas fa-stream"></i> Feed
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="@Url.RouteUrl("profile", new {username=UserInfo.Username})" class="d-block text-secondary">
+                            <i class="fas fa-user-alt"></i> Profile
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="@Url.LogoutUrl()" class="d-block text-secondary">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-8">
+            @RenderBody()
+        </div>
+    </div>
+</div>

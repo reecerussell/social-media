@@ -1,0 +1,31 @@
+﻿@using SocialMedia.Core
+@inject IUser UserInfo
+@{
+    Layout = "~/Views/Shared/_SingleLayout.cshtml";
+}
+
+<div class="container sections">
+    <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="section">
+                <h2 class="header-1 mt-3">
+                    Manage Your Account
+                </h2>
+                <p class="text-center small pt-1 info">
+                    Use this area to manage your Social Media account.
+                </p>
+                <ul class="list-group list-group-flush border-top">
+                    <li class="list-group-item"><a asp-action="Index" asp-controller="Feed" asp-area="" class="d-block"><i class="fas fa-step-backward"></i> Back to feed</a></li>
+                    <li class="list-group-item"><a href="@Url.RouteUrl("profile", new {username = UserInfo.Username})" class="d-block"><i class="fas fa-portrait"></i> Profile</a></li>
+                    <li class="list-group-item"><a asp-action="Index" asp-controller="Account" asp-area="Account" class="d-block"><i class="fas fa-info"></i> Details</a></li>
+                    <li class="list-group-item"><a asp-action="Change" asp-controller="Password" asp-area="Account" class="d-block"><i class="fas fa-key"></i> Password</a></li>
+                    <li class="list-group-item"><a asp-action="Index" asp-controller="LoginAttempts" asp-area="Account" class="d-block"><i class="fas fa-sign-in-alt"></i> Login Attempts</a></li>
+                    <li class="list-group-item"><a asp-action="Index" asp-controller="Delete" asp-area="Account" class="text-danger d-block"><i class="fas fa-trash"></i> Delete</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-8">
+            @RenderBody()
+        </div>
+    </div>
+</div>

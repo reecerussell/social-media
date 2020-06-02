@@ -1,0 +1,159 @@
+﻿@using SocialMedia.Core
+@using SocialMedia.Web.Helpers
+@model SocialMedia.Posts.Dtos.PostDto
+@inject IUser CurrentUser
+@{
+    ViewData["Title"] = Model.Caption + " | Post";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="section" id="post">
+    @if (!string.IsNullOrEmpty(Model.PostMediaId))
+    {
+        <img src="/Media/Download/@Model.PostMediaId" alt="@Model.Caption" class="img-fluid" />
+    }
+    <div class="p-4">
+        <div class="post-user-info">
+            @if (!string.IsNullOrEmpty(Model.UserProfileImageId))
+            {
+                <a href="@Url.ProfileUrl(Model.Username)">
+                    <div class="post-user-image" style="background-image: url(/Media/Download/@Model.UserProfileImageId)">
+                    </div>
+                </a>
+            }
+            <p>
+                @if (Model.LikeCount == 1)
+                {
+                    <b>@Model.LikeCount Like</b>
+                }
+                else
+                {
+                    <b>@Model.LikeCount Likes</b>
+                }
+                @if (Model.UserId == CurrentUser.Id)
+                {
+                    <span class="float-right sm-dropdown">
+                        <a href="#" class="sm-dropdown-trigger text-secondary">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </a>
+                        <span class="sm-dropdown-content">
+                            <a href="#" class="text-danger" onclick="document.getElementById('deletePost').submit();">Delete Post</a>
+                        </span>
+                    </span>
+                }
+                <br />
+                <b><a href="@Url.ProfileUrl(Model.Username)" class="text-secondary">@Model.Username</a></b> @Model.Caption<br />
+                <small>
+                    @Model.DateCreated.ToString("G")
+                    &nbsp;
+                    @if (Model.HasCurrentUserLiked)
+                    {
+                        <a href="#" id="unlike">Unlike</a>
+                    }
+                    else
+                    {
+                        <a href="#" id="like">Like</a>
+                    }
+                </small>
+            </p>
+        </div>
+        <hr />
+        <h2 class="text-left display-3 pb-1">Comments</h2>
+        @if (Model.Comments.Count > 0)
+        {
+            <ul class="list-group list-group-flush">
+                @foreach (var comment in Model.Comments.Where(x => string.IsNullOrEmpty(x.ReplyToId)))
+                {
+                    <li class="list-group-item post-user-info border-0 pt-0 px-0">
+                        @if (!string.IsNullOrEmpty(comment.UserProfileImageId))
+                        {
+                            <a href="@Url.ProfileUrl(comment.Username)">
+                                <div class="post-user-image" style="background-image: url(/Media/Download/@comment.UserProfileImageId)">
+                                </div>
+                            </a>
+                        }
+                        <p>
+                            <b><a href="@Url.ProfileUrl(comment.Username)" class="text-secondary">@comment.Username</a></b> @comment.Text
+                            <br />
+                            <small>
+                                @comment.DateCreated.ToString("G")
+                                &nbsp;
+                                <a href="#" data-comment-id="@comment.CommentId" class="js-reply-to text-secondary">Reply</a>
+                                @if (comment.Username == CurrentUser.Username)
+                                {
+                                    @:&nbsp;
+                                    <a href="#" data-comment-id="@comment.CommentId" class="js-delete-comment text-secondary">Delete</a>
+                                }
+                            </small>
+                        </p>
+                    </li>
+
+                    @foreach (var reply in Model.Comments.Where(x => x.ReplyToId == comment.CommentId))
+                    {
+                        <li class="list-group-item post-user-info border-0 pt-0 pr-0 pl-4">
+                            @if (!string.IsNullOrEmpty(reply.UserProfileImageId))
+                            {
+                                <a href="@Url.ProfileUrl(reply.Username)">
+                                    <div class="post-user-image" style="background-image: url(/Media/Download/@reply.UserProfileImageId)">
+                                    </div>
+                                </a>
+                            }
+                            <p>
+                                <b><a href="@Url.ProfileUrl(reply.Username)" class="text-secondary">@reply.Username</a></b> @reply.Text
+                                <br />
+                                <small>
+                                    @reply.DateCreated.ToString("G")
+                                    &nbsp;
+                                    <a href="#" data-comment-id="@reply.CommentId" class="js-reply-to text-secondary">Reply</a>
+                                    @if (comment.Username == CurrentUser.Username)
+                                    {
+                                        @:&nbsp;
+                                        <a href="#" data-comment-id="@comment.CommentId" class="js-delete-comment text-secondary">Delete</a>
+                                    }
+                                </small>
+                            </p>
+                        </li>
+                    }
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No one has commented on this post yet!</p>
+        }
+
+        <form asp-action="CreateComment" method="post">
+            <input type="hidden" name="PostId" value="@Model.PostId" />
+            <input type="hidden" name="ReplyToId" id="ReplyToId" />
+            <div class="form-group sm-input">
+                <label for="Comment" class="small">Comment</label>
+                <textarea class="form-control" rows="2" max="255" id="Comment" name="Comment" placeholder="Write a comment..." required></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary float-right">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form asp-action="Delete" method="post" id="deletePost">
+    <input type="hidden" name="id" value="@Model.PostId" />
+</form>
+
+<form asp-action="DeleteComment" method="post" id="deleteComment">
+    <input type="hidden" name="commentId" id="deleteCommentId" />
+    <input type="hidden" name="postId" value="@Model.PostId"/>
+</form>
+
+@if (Model.HasCurrentUserLiked)
+{
+    <form asp-action="Unlike" method="post" id="unlikeForm">
+        <input type="hidden" name="postId" value="@Model.PostId" />
+    </form>
+}
+else
+{
+    <form asp-action="Like" method="post" id="likeForm">
+        <input type="hidden" name="postId" value="@Model.PostId" />
+    </form>
+}

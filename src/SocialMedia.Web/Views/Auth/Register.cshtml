@@ -1,0 +1,47 @@
+﻿@model  SocialMedia.Web.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "_SingleLayout";
+}
+
+<div class="container sections">
+    <div class="row">
+        <div class="col-md-8 col-lg-6 col-xl-5">
+            <div class="section p-4">
+                <h1 class="header-1">Social Media</h1>
+                <p class="text-muted small pt-1 info">
+                    The brand new, inivitive social media platform, leading
+                    the industry in how a social media platform should be!
+                </p>
+                <hr />
+                <h2 class="display-3">Join Us Now</h2>
+                <p class="text-center">
+                    Enter a few details below to get started!
+                </p>
+                <form asp-action="Register" asp-controller="Auth" method="post">
+                    @if (!string.IsNullOrEmpty(Model.Error))
+                    {
+                        <p class="error">@Model.Error</p>
+                    }
+
+                    <div class="form-group sm-input">
+                        <label class="small" for="User.Username">Username</label>
+                        <input type="text" name="User.Username" id="User.Username" class="form-control" placeholder="Enter a username" required/>
+                    </div>
+                    <div class="form-group sm-input">
+                        <label class="small" for="User.Password">Password</label>
+                        <input type="password" name="User.Password" id="User.Password" class="form-control" placeholder="Enter a password" required/>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block float-right">REGISTER</button>
+                    </div>
+                    
+                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                </form>
+                <p class="text-center mb-0">
+                    <a asp-action="Login" asp-controller="Auth">Already have an account?</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
